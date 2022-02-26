@@ -7,7 +7,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import streamlit as st
-
+from data.data_prep import DataPreparation
 
 class SankeyPage:
     def __init__(self, plottype='overview'):
@@ -32,7 +32,8 @@ class SankeyPage:
 
         :return:
         """
-        df = pd.read_csv('resources/bevételek_2017_2021.csv', sep=';')
+        data = DataPreparation('resources', 'bevetelek_2017_2021.csv', 'kiadasok_2017_2021.csv', 'UTF-8', ';', 'sankey')
+        df = data.run()
         return df
 
     def create_sankey(self):
