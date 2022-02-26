@@ -1,13 +1,15 @@
 import streamlit as st
 
-from pages import home, about
+from pages import home, sankey
+from pages.sankey import SankeyPage
+
 
 st.markdown(
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">',
     unsafe_allow_html=True,
 )
 query_params = st.experimental_get_query_params()
-tabs = ["Home", "About"]
+tabs = ["Home", "Bevételek és kiadások"]
 if "tab" in query_params:
     active_tab = query_params["tab"][0]
 else:
@@ -35,10 +37,9 @@ st.markdown(tabs_html, unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 if active_tab == "Home":
-    fig = home.Sankey.create_sankey()
-    st.write(fig)
-elif active_tab == "About":
-    fig = home.Sankey.create_sankey()
-    st.write(fig)
+    fig = home.create_homepage()
+elif active_tab == "Bevételek és kiadások":
+    sankey_page = SankeyPage()
+    fig = sankey_page.create_sankey()
 else:
     st.error("Something has gone terribly wrong.")

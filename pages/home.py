@@ -1,21 +1,11 @@
-import json
-import plotly.graph_objects as go
+import streamlit as st
 
 
-class Sankey:
-    def __init__(self, plottype='overview'):
-        """
+def create_homepage():
+    """
 
-        :param type:
-        """
-        self.plottype=type
+    :param type:
+    """
+    st.title("Home")
+    st.markdown("Bla bla bla")
 
-    @staticmethod
-    def create_sankey():
-        """
-
-        :return:
-        """
-        with open("resources/fig.json", "r") as f:
-            fig = go.Figure(json.load(f))
-        return fig
