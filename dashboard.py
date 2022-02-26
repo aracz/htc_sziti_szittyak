@@ -1,6 +1,6 @@
 import streamlit as st
 
-from pages import home, sankey
+from pages import home
 from pages.sankey import SankeyPage
 
 

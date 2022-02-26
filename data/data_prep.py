@@ -22,8 +22,7 @@ class DataPreparation:
 
     def sankey_data(self):
 
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
+        bevetel, kiadas = self.raw_data()
 
         # kategoria hozzaadasa
         bevetel['oldal'] = 'Bevetel'
@@ -42,7 +41,21 @@ class DataPreparation:
         # concat
         concat_df = pd.concat([bevetel, kiadas])
 
-        return concat_df
+        #rename cat
+        all_values = concat_df['source'].tolist() + kiadas['target'].tolist()
+        all_values_unique = list(set(all_values))
+        label_df = pd.DataFrame({'label': all_values_unique})
+        label_df['code'] = label_df[['label']].apply(lambda col: pd.Categorical(col).codes)
+        label_df = label_df.sort_values(by=['code'], ascending=True)
+
+        rename_dict = dict(zip(label_df['label'], label_df['code']))
+        concat_df['source_code'] = concat_df['source'].map(lambda s: rename_dict.get(s) if s in rename_dict else s)
+        concat_df['target_code'] = concat_df['target'].map(lambda s: rename_dict.get(s) if s in rename_dict else s)
+
+        concat_df['value'] = [float(str(i).replace(",", ".")) for i in concat_df['value']]
+        concat_df = concat_df.groupby(['source', 'target', 'source_code', 'target_code', 'Év'])['value'].sum().reset_index()
+
+        return concat_df, label_df
 
     def raw_data(self):
 
@@ -50,6 +63,15 @@ class DataPreparation:
                               encoding=self.encoding)
         kiadas = pd.read_csv(f'{self.resources_dir}/{self.spending}', sep=self.separator, header=0,
                              encoding=self.encoding)
+
+        bevetel['Bevétel(ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
+                                                   bevetel['Bevétel (ezer Ft) - reálérték']]
+
+        kiadas['Kiadás (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
+                                                  kiadas['Kiadás (ezer Ft) - reálérték']]
+
+        kiadas['Szervezeti egység'] = [str(i).replace("Költségvetési intézmény", "Költségvetési intézmények") for i in
+                                       kiadas['Szervezeti egység']]
 
         return bevetel, kiadas
 
