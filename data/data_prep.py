@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 class DataPreparation:
@@ -17,6 +16,8 @@ class DataPreparation:
         if self.chart_type == 'sankey':
             return self.sankey_data()
         elif self.chart_type == 'bar_chart':
+            return self.raw_data()
+        else:
             return self.raw_data()
 
     def sankey_data(self):
