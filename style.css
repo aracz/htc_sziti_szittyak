@@ -72,3 +72,15 @@ img.logo-img {
 .st-bp {
     border-color: var(--primary) !important;
 }
+
+section iframe {
+  display: none !important;
+}
+
+.logo-container {
+    margin-top: -14px;
+}
+
+.modebar-container {
+  display: none !important;
+}
