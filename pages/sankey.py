@@ -48,12 +48,19 @@ class SankeyPage:
                 thickness=20,
                 line=dict(color="black", width=0.5),
                 label=self.label_df['label'].tolist(),
-                color=['Color']
+                color=self.label_df['color'].tolist()
             ),
             link=dict(
                 source=df_ev['source_code'].tolist(),
                 target=df_ev['target_code'].tolist(),
-                value=df_ev['value'].tolist()
+                value=df_ev['value'].tolist(),
+                color=df_ev['link_color'].tolist()
             ))])
+
+        fig.update_layout(
+            width=800,
+            height=600,
+            margin=dict(l=0, r=20, t=20, b=0)
+        )
 
         st.write(fig)

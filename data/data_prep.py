@@ -55,6 +55,21 @@ class DataPreparation:
         concat_df['value'] = [float(str(i).replace(",", ".")) for i in concat_df['value']]
         concat_df = concat_df.groupby(['source', 'target', 'source_code', 'target_code', 'Év'])['value'].sum().reset_index()
 
+        label_df['color'] = 'grey'
+        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgb(18, 50, 110, 0.5)",
+                      'Költségvetési intézmények': "rgb(210, 179, 124, 0.5)"}
+        label_df['color'] = label_df['label'].apply(
+            lambda x: color_dict[x] if x in color_dict.keys() else 'grey')
+        label_df['color'] = label_df['label'].apply(
+            lambda x: color_dict[x] if x in color_dict.keys() else 'grey')
+
+        concat_df['link_color'] = 'grey'
+        for index, row in concat_df.iterrows():
+            if row['source']=='Főpolgármesteri Hivatal és Önkormányzat' or row['target']=='Főpolgármesteri Hivatal és Önkormányzat':
+                concat_df.loc[index, 'link_color'] = color_dict['Főpolgármesteri Hivatal és Önkormányzat']
+            else:
+                concat_df.loc[index, 'link_color'] = color_dict['Költségvetési intézmények']
+
         return concat_df, label_df
 
     def raw_data(self):
@@ -72,6 +87,13 @@ class DataPreparation:
 
         kiadas['Szervezeti egység'] = [str(i).replace("Költségvetési intézmény", "Költségvetési intézmények") for i in
                                        kiadas['Szervezeti egység']]
+
+        rename_dict = {"Főpolgármesteri Hivatal": "Főpolgármesteri Hivatal és Önkormányzat",
+                       "Önkormányzat": "Főpolgármesteri Hivatal és Önkormányzat"}
+        kiadas['Szervezeti egység'] = kiadas['Szervezeti egység'].map(
+            lambda s: rename_dict.get(s) if s in rename_dict else s)
+        bevetel['Szervezeti egység'] = bevetel['Szervezeti egység'].map(
+            lambda s: rename_dict.get(s) if s in rename_dict else s)
 
         return bevetel, kiadas
 
