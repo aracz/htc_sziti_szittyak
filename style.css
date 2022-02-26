@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+
+:root {
+    --primary: rgb(18, 50, 110) !important;
+    --secondary: rgb(210, 179, 124) !important;
+    --blue: rgb(160, 217, 247) !important;
+    --primary-color: rgb(255, 255, 255) !important;
+}
+
+body {
+    font-family: "Source Sans Pro", sans-serif;
+}
+
+.appview-container section > div {
+    padding: 0;
+}
+
+.block-container {
+    width: 100%;
+    max-width: none;
+}
+
+#MainMenu,
+header,
+footer {
+    display: none !important;
+}
+
+img.logo-img {
+    max-width: 250px;
+    padding: 0 0 32px 0;
+}
+
+.block-container>div>div>div:nth-child(1),
+.block-container>div>div>div:nth-child(2) {
+    display: none;
+}
+
+.nav-tabs .nav-link {
+    border: none !important;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:hover {
+    color: var(--primary-color) !important;
+    border: none !important;
+    background-color: var(--primary) !important;
+    border-radius: 0;
+    -webkit-transition: color .14s ease-out, background-color .14s ease-out;
+    transition: color .14s ease-out, background-color .14s ease-out;
+}
+
+.nav-tabs {
+    border: none !important;
+}
+
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
+    border: none !important;
+}
+
+.nav-tabs .nav-item {
+    padding: 0;
+    margin: 0;
+}
+
+.nav-link {
+    color: var(--primary) !important;
+}
+
+.st-bp {
+    border-color: var(--primary) !important;
+}

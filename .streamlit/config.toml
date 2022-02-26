@@ -1,6 +1,8 @@
-[theme]
-base="light"
-primaryColor="#D2B37C"
-textColor="#12326E"
-secondaryBackgroundColor="#A0D9F7"
-font="sans serif"
+[server]
+enableCORS = false
+
+[ui]
+hideTopBar = true
+
+[browser]
+gatherUsageStats = false
