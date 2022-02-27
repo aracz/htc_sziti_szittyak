@@ -56,8 +56,8 @@ class DataPreparation:
         concat_df = concat_df.groupby(['source', 'target', 'source_code', 'target_code', 'Év'])['value'].sum().reset_index()
 
         label_df['color'] = 'grey'
-        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgb(18, 50, 110, 0.5)",
-                      'Költségvetési intézmények': "rgb(210, 179, 124, 0.5)"}
+        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgba(18, 50, 110, 0.5)",
+                      'Költségvetési intézmények': "rgba(210, 179, 124, 0.5)"}
         label_df['color'] = label_df['label'].apply(
             lambda x: color_dict[x] if x in color_dict.keys() else 'grey')
         label_df['color'] = label_df['label'].apply(
