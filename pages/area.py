@@ -44,3 +44,33 @@ Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadá
         )
 
         st.write(fig)
+
+        self.create_bar()
+
+    def create_bar(self):
+        st.title("5 legnagyobb szabadon felhasználható, önként vállalt kiadás")
+        self.select_year = st.selectbox('Kérem válasszon egy évet:', self.df['Év'].unique())
+        self.df_ev = self.df[self.df['Év'] == self.select_year]
+        print(self.df_ev)
+        szabad = self.df[self.df['cimkod_str'] == "2"]
+        print(szabad)
+        szabad_summed = self.df.groupby(["Feladat megnevezése"])[
+           'Kiadás (ezer Ft) - reálérték'].sum().reset_index()
+        szabad5 = szabad_summed.sort_values(by=['Kiadás (ezer Ft) - reálérték'], ascending=False).iloc[:5]
+        print(szabad5)
+        print(szabad5["Feladat megnevezése"])
+
+        fig = go.Figure(data=[go.Bar(
+                    x=szabad5["Feladat megnevezése"], y=szabad['Kiadás (ezer Ft) - reálérték'],
+                    textposition='auto', marker_color="rgba(160, 217, 247, 0.7)"
+                )])
+        fig.update_layout(
+            width=950,
+            height=400,
+            margin=dict(l=0, r=20, t=20, b=10),
+            #paper_bgcolor='rgba(0,0,0,0)',
+            #plot_bgcolor='rgba(0,0,0,0)'
+        )
+        st.write(fig)
+
+
