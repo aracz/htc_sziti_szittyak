@@ -19,6 +19,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
 st.markdown(
     f"""
     <div class="logo-container">
@@ -27,6 +28,9 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+st.markdown("<h1 style='text-align: center; color: #12326E;'>KÖZÉRTHETŐ KÖLTSÉGVETÉS</h1>", unsafe_allow_html=True)
+
 
 query_params = st.experimental_get_query_params()
 tabs = ["Bevezető", "Áttekintés", "Mozgástér", "Összehasonlítás"]
