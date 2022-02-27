@@ -10,5 +10,5 @@ docker build -f Dockerfile -t app:latest .
 # Run with Docker
 
 ```
-docker run --init -p 8501:8501 app:latest
+docker run --rm --name htc -p 8501:8501 app:latest
 ```
