@@ -1,6 +1,7 @@
 import base64
 import streamlit as st
 
+from pages.comparison import ComparisonChart
 from pages import home
 from pages.sankey import SankeyPage
 
@@ -26,7 +27,7 @@ st.markdown(
 )
 
 query_params = st.experimental_get_query_params()
-tabs = ["Home", "Bevételek és kiadások"]
+tabs = ["Home", "Bevételek és kiadások", "Összehasonlítás"]
 if "tab" in query_params:
     active_tab = query_params["tab"][0]
 else:
@@ -58,5 +59,11 @@ if active_tab == "Home":
 elif active_tab == "Bevételek és kiadások":
     sankey_page = SankeyPage()
     fig = sankey_page.create_sankey()
+elif active_tab == 'Összehasonlítás':
+    comparison_page = ComparisonChart()
+    title1 = 'Bevételek'
+    fig1 = comparison_page.create_income_comparison_chart()
+    title2 = 'Kiadások'
+    fig2 = comparison_page.create_spending_comparison_chart()
 else:
     st.error("Something has gone terribly wrong.")

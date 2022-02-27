@@ -16,7 +16,9 @@ class DataPreparation:
         if self.chart_type == 'sankey':
             return self.sankey_data()
         elif self.chart_type == 'bar_chart':
-            return self.raw_data()
+            return self.barchart_data()
+        elif self.chart_type == 'area':
+            return self.area_data()
         else:
             return self.raw_data()
 
@@ -98,4 +100,25 @@ class DataPreparation:
         return bevetel, kiadas
 
     def barchart_data(self):
-        return True
+
+        bevetel = self.raw_data()[0]
+        kiadas = self.raw_data()[1]
+
+        bevetel['oldal'] = 'Bevetel'
+        kiadas['oldal'] = 'Kiadas'
+
+        concat_df = pd.concat([bevetel, kiadas])
+
+        return concat_df
+
+    def area_data(self):
+
+        bevetel = self.raw_data()[0]
+        kiadas = self.raw_data()[1]
+
+        bevetel['oldal'] = 'Bevetel'
+        kiadas['oldal'] = 'Kiadas'
+
+        concat_df = pd.concat([bevetel, kiadas])
+
+        return concat_df
