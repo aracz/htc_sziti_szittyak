@@ -115,26 +115,3 @@ class DataPreparation:
 
         return bevetel, kiadas
 
-    def barchart_data(self):
-
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
-
-        bevetel['oldal'] = 'Bevetel'
-        kiadas['oldal'] = 'Kiadas'
-
-        concat_df = pd.concat([bevetel, kiadas])
-
-        return concat_df
-
-    def area_data(self):
-
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
-
-        bevetel['oldal'] = 'Bevetel'
-        kiadas['oldal'] = 'Kiadas'
-
-        concat_df = pd.concat([bevetel, kiadas])
-
-        return concat_df
