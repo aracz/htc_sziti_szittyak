@@ -1,13 +1,30 @@
+import base64
 import streamlit as st
 
 from pages import home
 from pages.sankey import SankeyPage
 
 
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+local_css("style.css")
+
 st.markdown(
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">',
     unsafe_allow_html=True,
 )
+
+st.markdown(
+    f"""
+    <div class="logo-container">
+        <img class="logo-img" src="data:image/png;base64,{base64.b64encode(open("resources/logo.png", "rb").read()).decode()}">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 query_params = st.experimental_get_query_params()
 tabs = ["Home", "Bevételek és kiadások"]
 if "tab" in query_params:
