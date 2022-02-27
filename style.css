@@ -30,6 +30,11 @@ img.logo-img {
     padding: 0 0 32px 0;
 }
 
+.logo-container {
+  text-align: center;
+  margin: 40px 0;
+}
+
 .block-container>div>div>div:nth-child(1),
 .block-container>div>div>div:nth-child(2) {
     display: none;
@@ -52,6 +57,7 @@ img.logo-img {
 
 .nav-tabs {
     border: none !important;
+    justify-content: center;
 }
 
 .nav-tabs .nav-link:focus,
