@@ -4,6 +4,8 @@ import streamlit as st
 from pages.comparison import ComparisonChart
 from pages import home
 from pages.sankey import SankeyPage
+from pages.area import AreaPage
+
 
 
 def local_css(file_name):
@@ -17,6 +19,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
 st.markdown(
     f"""
     <div class="logo-container">
@@ -26,16 +29,19 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+st.markdown("<h1 style='text-align: center; color: #12326E;'>KÖZÉRTHETŐ KÖLTSÉGVETÉS</h1>", unsafe_allow_html=True)
+
+
 query_params = st.experimental_get_query_params()
-tabs = ["Home", "Bevételek és kiadások", "Összehasonlítás"]
+tabs = ["Bevezető", "Áttekintés", "Mozgástér", "Összehasonlítás"]
 if "tab" in query_params:
     active_tab = query_params["tab"][0]
 else:
-    active_tab = "Home"
+    active_tab = "Bevezető"
 
 if active_tab not in tabs:
-    st.experimental_set_query_params(tab="Home")
-    active_tab = "Home"
+    st.experimental_set_query_params(tab="Bevezető")
+    active_tab = "Bevezető"
 
 li_items = "".join(
     f"""
@@ -54,11 +60,14 @@ tabs_html = f"""
 st.markdown(tabs_html, unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
-if active_tab == "Home":
+if active_tab == "Bevezető":
     fig = home.create_homepage()
-elif active_tab == "Bevételek és kiadások":
+elif active_tab == "Áttekintés":
     sankey_page = SankeyPage()
     fig = sankey_page.create_sankey()
+elif active_tab == "Mozgástér":
+    area_page = AreaPage()
+    fig = area_page.create_area()
 elif active_tab == 'Összehasonlítás':
     comparison_page = ComparisonChart()
     title1 = 'Bevételek'
@@ -66,4 +75,4 @@ elif active_tab == 'Összehasonlítás':
     title2 = 'Kiadások'
     fig2 = comparison_page.create_spending_comparison_chart()
 else:
-    st.error("Something has gone terribly wrong.")
+    st.error("Valami elromlott.")

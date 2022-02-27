@@ -20,7 +20,7 @@ class DataPreparation:
         elif self.chart_type == 'area':
             return self.area_data()
         else:
-            return self.raw_data()
+            return self.area_data()
 
     def sankey_data(self):
 
@@ -58,8 +58,8 @@ class DataPreparation:
         concat_df = concat_df.groupby(['source', 'target', 'source_code', 'target_code', 'Év'])['value'].sum().reset_index()
 
         label_df['color'] = 'grey'
-        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgb(18, 50, 110, 0.5)",
-                      'Költségvetési intézmények': "rgb(210, 179, 124, 0.5)"}
+        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgba(160, 217, 247, 0.8)",
+                      'Költségvetési intézmények': "rgba(210, 179, 124, 0.8)"}
         label_df['color'] = label_df['label'].apply(
             lambda x: color_dict[x] if x in color_dict.keys() else 'grey')
         label_df['color'] = label_df['label'].apply(
@@ -73,6 +73,22 @@ class DataPreparation:
                 concat_df.loc[index, 'link_color'] = color_dict['Költségvetési intézmények']
 
         return concat_df, label_df
+
+    def area_data(self):
+
+        bevetel, kiadas = self.raw_data()
+
+        kiadas['cimkod_str'] = kiadas['Címkód'].astype(str).str[-1]
+        kiadas['Felhasználás célja'] = 'Kötelező kiadások'
+        onkent = kiadas[kiadas['cimkod_str'] == '2']
+        onkent['Felhasználás célja'] = 'Szabadon felhasználható, önként vállalt kiadások'
+        kotelezo = kiadas[kiadas['cimkod_str'] == '1']
+        hatosagi = kiadas[kiadas['cimkod_str'] == '3']
+        hatosagi['Felhasználás célja'] = 'Hatósági kötelező kiadások'
+
+        concat_df = pd.concat([onkent, kotelezo, hatosagi])
+
+        return concat_df
 
     def raw_data(self):
 
@@ -99,26 +115,3 @@ class DataPreparation:
 
         return bevetel, kiadas
 
-    def barchart_data(self):
-
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
-
-        bevetel['oldal'] = 'Bevetel'
-        kiadas['oldal'] = 'Kiadas'
-
-        concat_df = pd.concat([bevetel, kiadas])
-
-        return concat_df
-
-    def area_data(self):
-
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
-
-        bevetel['oldal'] = 'Bevetel'
-        kiadas['oldal'] = 'Kiadas'
-
-        concat_df = pd.concat([bevetel, kiadas])
-
-        return concat_df
