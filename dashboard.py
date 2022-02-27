@@ -1,6 +1,7 @@
 import base64
 import streamlit as st
 
+from pages.comparison import ComparisonChart
 from pages import home
 from pages.sankey import SankeyPage
 from pages.area import AreaPage
@@ -28,7 +29,7 @@ st.markdown(
 )
 
 query_params = st.experimental_get_query_params()
-tabs = ["Bevezető", "Áttekintés", "Mozgástér"]
+tabs = ["Bevezető", "Áttekintés", "Mozgástér", "Összehasonlítás"]
 if "tab" in query_params:
     active_tab = query_params["tab"][0]
 else:
@@ -41,7 +42,7 @@ if active_tab not in tabs:
 li_items = "".join(
     f"""
     <li class="nav-item">
-        <a class="nav-link{' active' if t==active_tab else ''}" href="/?tab={t}">{t}</a>
+        <a class="nav-link{' active' if t==active_tab else ''}" href="/?tab={t}" target="_self">{t}</a>
     </li>
     """
     for t in tabs
@@ -63,5 +64,11 @@ elif active_tab == "Áttekintés":
 elif active_tab == "Mozgástér":
     area_page = AreaPage()
     fig = area_page.create_area()
+elif active_tab == 'Összehasonlítás':
+    comparison_page = ComparisonChart()
+    title1 = 'Bevételek'
+    fig1 = comparison_page.create_income_comparison_chart()
+    title2 = 'Kiadások'
+    fig2 = comparison_page.create_spending_comparison_chart()
 else:
     st.error("Valami elromlott.")
