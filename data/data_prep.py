@@ -26,6 +26,12 @@ class DataPreparation:
 
         bevetel, kiadas = self.raw_data()
 
+        bevetel['Bevétel(ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
+                                                   bevetel['Bevétel (ezer Ft) - reálérték']]
+
+        kiadas['Kiadás (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
+                                                  kiadas['Kiadás (ezer Ft) - reálérték']]
+
         # kategoria hozzaadasa
         bevetel['oldal'] = 'Bevetel'
         kiadas['oldal'] = 'Kiadas'
@@ -81,12 +87,6 @@ class DataPreparation:
         kiadas = pd.read_csv(f'{self.resources_dir}/{self.spending}', sep=self.separator, header=0,
                              encoding=self.encoding)
 
-        bevetel['Bevétel(ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
-                                                   bevetel['Bevétel (ezer Ft) - reálérték']]
-
-        kiadas['Kiadás (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
-                                                  kiadas['Kiadás (ezer Ft) - reálérték']]
-
         kiadas['Szervezeti egység'] = [str(i).replace("Költségvetési intézmény", "Költségvetési intézmények") for i in
                                        kiadas['Szervezeti egység']]
 
@@ -107,18 +107,15 @@ class DataPreparation:
         bevetel['oldal'] = 'Bevetel'
         kiadas['oldal'] = 'Kiadas'
 
-        concat_df = pd.concat([bevetel, kiadas])
+        kiadas['Ágazat'] = kiadas['Ágazat'].str.split(')').str[-1]
 
-        return concat_df
+        bevetel['Bevétel (ezer Ft) - reálérték'] = bevetel['Bevétel (ezer Ft) - reálérték'].str.replace(',', '.')
+        bevetel['Bevétel (ezer Ft) - reálérték'] = pd.to_numeric(bevetel['Bevétel (ezer Ft) - reálérték'], downcast="float")
 
-    def area_data(self):
-
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
-
-        bevetel['oldal'] = 'Bevetel'
-        kiadas['oldal'] = 'Kiadas'
+        kiadas['Kiadás (ezer Ft) - reálérték'] = kiadas['Kiadás (ezer Ft) - reálérték'].str.replace(',', '.')
+        kiadas['Kiadás (ezer Ft) - reálérték'] = pd.to_numeric(kiadas['Kiadás (ezer Ft) - reálérték'], downcast="float")
 
         concat_df = pd.concat([bevetel, kiadas])
 
         return concat_df
+
