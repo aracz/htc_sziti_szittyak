@@ -16,7 +16,9 @@ class DataPreparation:
         if self.chart_type == 'sankey':
             return self.sankey_data()
         elif self.chart_type == 'bar_chart':
-            return self.raw_data()
+            return self.barchart_data()
+        elif self.chart_type == 'area':
+            return self.area_data()
         else:
             return self.raw_data()
 
@@ -51,7 +53,36 @@ class DataPreparation:
         kiadas = pd.read_csv(f'{self.resources_dir}/{self.spending}', sep=self.separator, header=0,
                              encoding=self.encoding)
 
+        bevetel['Bevétel (ezer Ft) - reálérték'] = bevetel['Bevétel (ezer Ft) - reálérték'].str.replace(',', '.')
+        bevetel['Bevétel (ezer Ft) - reálérték'] = pd.to_numeric(bevetel['Bevétel (ezer Ft) - reálérték'], downcast="float")
+
+        kiadas['Kiadás (ezer Ft) - reálérték'] = kiadas['Kiadás (ezer Ft) - reálérték'].str.replace(',', '.')
+        kiadas['Kiadás (ezer Ft) - reálérték'] = pd.to_numeric(kiadas['Kiadás (ezer Ft) - reálérték'], downcast="float")
+
+        kiadas['Szervezeti egység'] = [str(i).replace("Költségvetési intézmény", "Költségvetési intézmények") for i in kiadas['Szervezeti egység']]
+
         return bevetel, kiadas
 
     def barchart_data(self):
-        return True
+
+        bevetel = self.raw_data()[0]
+        kiadas = self.raw_data()[1]
+
+        bevetel['oldal'] = 'Bevetel'
+        kiadas['oldal'] = 'Kiadas'
+
+        concat_df = pd.concat([bevetel, kiadas])
+
+        return concat_df
+
+    def area_data(self):
+
+        bevetel = self.raw_data()[0]
+        kiadas = self.raw_data()[1]
+
+        bevetel['oldal'] = 'Bevetel'
+        kiadas['oldal'] = 'Kiadas'
+
+        concat_df = pd.concat([bevetel, kiadas])
+
+        return concat_df
