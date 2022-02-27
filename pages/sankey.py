@@ -59,11 +59,11 @@ class SankeyPage:
 
         kiadas_delta = kiadas_total/kiadas_total_tminus1
         bevetel_delta = bevetel_total/bevetel_total_tminus1
-        if kiadas_delta > 1:
+        if kiadas_delta >= 1:
             kiadas_delta = "{:.0%}".format(kiadas_delta)
         else:
             kiadas_delta = "-{:.0%}".format(kiadas_delta)
-        if bevetel_delta > 1:
+        if bevetel_delta >= 1:
             bevetel_delta = "{:.0%}".format(bevetel_delta)
         else:
             bevetel_delta = "-{:.0%}".format(bevetel_delta)
@@ -102,7 +102,7 @@ class SankeyPage:
                 thickness=20,
                 line=dict(color="black", width=0.5),
                 label=self.label_df['label'].tolist(),
-                color=self.label_df['color'].tolist()
+                color="rgba(18,50,110,0.7)"
             ),
             link=dict(
                 source=self.df_ev['source_code'].tolist(),
@@ -114,7 +114,7 @@ class SankeyPage:
         fig.update_layout(
             width=800,
             height=600,
-            margin=dict(l=0, r=20, t=20, b=0)
+            margin=dict(l=0, r=20, t=20, b=10)
         )
 
         st.write(fig)
