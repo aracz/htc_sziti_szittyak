@@ -3,6 +3,7 @@ import streamlit as st
 
 from pages import home
 from pages.sankey import SankeyPage
+from pages.deduction import DeductionPage
 
 
 def local_css(file_name):
@@ -26,7 +27,7 @@ st.markdown(
 )
 
 query_params = st.experimental_get_query_params()
-tabs = ["Home", "Bevételek és kiadások"]
+tabs = ["Home", "Bevételek és kiadások", "Szolidaritási hozzájárulás"]
 if "tab" in query_params:
     active_tab = query_params["tab"][0]
 else:
@@ -58,5 +59,8 @@ if active_tab == "Home":
 elif active_tab == "Bevételek és kiadások":
     sankey_page = SankeyPage()
     fig = sankey_page.create_sankey()
+elif active_tab == "Szolidaritási hozzájárulás":
+    deduction_page = DeductionPage()
+    fig = deduction_page.create_deduction_chart()
 else:
     st.error("Something has gone terribly wrong.")

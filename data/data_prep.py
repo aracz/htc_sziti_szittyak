@@ -1,4 +1,6 @@
+from operator import concat
 import pandas as pd
+from pprint import pprint
 
 
 class DataPreparation:
@@ -17,6 +19,8 @@ class DataPreparation:
             return self.sankey_data()
         elif self.chart_type == 'bar_chart':
             return self.raw_data()
+        elif self.chart_type == 'deduction':
+            return self.deduction()
         else:
             return self.raw_data()
 
@@ -69,6 +73,32 @@ class DataPreparation:
                 concat_df.loc[index, 'link_color'] = color_dict['Főpolgármesteri Hivatal és Önkormányzat']
             else:
                 concat_df.loc[index, 'link_color'] = color_dict['Költségvetési intézmények']
+
+        return concat_df, label_df
+
+    def deduction(self):
+        bevetel, kiadas = self.raw_data()
+
+        kiadas = kiadas.sort_values(by=['Év'], ascending=True)
+        kiadas_df = kiadas[kiadas['Címkód'] == 846001]
+
+        concat_df = kiadas_df['Kiadás (ezer Ft) - reálérték'].unique()
+
+        label_df = kiadas['Év'].unique()
+        label_df = label_df[1:]
+
+        def format_color_groups(df):
+            colors = ['gold', 'lightblue']
+            x = df.copy()
+            factors = list(x['publication'].unique())
+            i = 0
+            for factor in factors:
+                style = f'background-color: {colors[i]}'
+                x.loc[x['publication'] == factor, :] = style
+                i = not i
+            return x
+
+        df.style.apply(format_color_groups, axis=None)
 
         return concat_df, label_df
 
