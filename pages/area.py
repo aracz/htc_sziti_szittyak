@@ -8,6 +8,9 @@ import plotly.express as px
 class AreaPage:
     def __init__(self):
         self.df = AreaPage.get_data()
+        st.title("KÖLTSÉGVETÉSI  MOZGÁSTÉR")
+        st.markdown("""Mennyi mozgástere van a kiadások csökkentésére vagy plusz bevételek szerzésére a fővárosi önkormányzatnak? - Ezt a kérdést mi is feltettük magunknak.
+Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadások tekintetében - vagyis az önként vállalt kiadások aránya - nagyon lecsökkent.""")
 
     @staticmethod
     def get_data():
@@ -28,9 +31,9 @@ class AreaPage:
         print(df_summed)
 
         fig = px.area(df_summed, x='Év', y='Kiadás (ezer Ft) - reálérték', color='Felhasználás célja')
-        fig.data[0].line.color = '#12326E'
-        fig.data[1].line.color = '#D2B37C'
-        fig.data[2].line.color = '#A0D9F7'
+        fig.data[0].line.color = "rgba(18,50,110,0.7)"
+        fig.data[1].line.color = "rgba(210, 179, 124, 0.7)"
+        fig.data[2].line.color = "rgba(160, 217, 247, 0.7)"
         fig.for_each_trace(lambda trace: trace.update(fillcolor=trace.line.color))
         fig.update_layout(
             width=950,

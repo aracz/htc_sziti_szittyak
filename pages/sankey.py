@@ -18,9 +18,11 @@ class SankeyPage:
         """
         self.plottype=plottype
         self.df, self.label_df = SankeyPage.get_data()
-        st.title("Bevételek és kiadások")
-        st.markdown("Bla bla")
-        self.select_year = st.selectbox('Valasszon egy évet:', self.df['Év'].unique())
+        st.title("ÁTTEKINTÉS")
+        st.markdown("""A bevételeket a bevételi kategóriák szerinti bontásban mutatjuk meg itt. Az egeret az egyes bevételi kategóriák fölé húzva az adott kategória részletes magyarázata jelenik meg.
+A kiadásokat az ágazatok, azaz a főváros által ellátott feladatkörök szerinti bontásban jelenítettük meg. Ezek:
+A diagrammon láthatóak még az egyes költségvetési tételek felett rendelkező intézményi szintek is. Ezek: a Fővárosi Önkormányzat, a legnagyobb jogi személy, de nincs saját végrehajtó szervezete, hanem a Főpolgármesteri Hivatalon, a fővárosi fenntartású intézményeken és a fővárosi tulajdonú cégek közszolgáltatásain keresztül látja el feladatait. A Főpolgármesteri Hivatal - a Fővárosi Önkormányzat végrehajtó szervezete, önálló jogi személy; költségvetési intézmény - a Fővárosi Önkormányzat által fenntartott intézmények: idősotthonok, hajléktalanellátó, múzeumok, könyvtár, önkormányzati rendészet, óvodák, művelődési házak. """)
+        self.select_year = st.selectbox('Kérem válasszon egy évet:', self.df['Év'].unique())
         self.df_ev = self.df[self.df['Év'] == self.select_year]
         self.df_ev_tminus1 = self.df[self.df['Év'] == (self.select_year-1)]
 
