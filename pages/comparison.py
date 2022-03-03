@@ -57,8 +57,16 @@ class ComparisonChart:
         fig.update_yaxes(type='category')
 
         fig.update_layout(
-            title='Bevételek - Összes bevétel (ezer Ft) - reálérték'
+            title=f'Bevételek - {selected_income_cat} - (ezer Ft) - reálérték'
         )
+
+        fig.update_xaxes(
+            title_text='Bevétel (ezer Ft) - reálérték',
+            title_standoff=25)
+
+        fig.update_yaxes(
+            title_text="Év",
+            title_standoff=25)
 
         st.write(fig)
 
@@ -87,7 +95,15 @@ class ComparisonChart:
                                marker_color='rgb(18, 50, 110)'), )
         fig.update_yaxes(type='category')
         fig.update_layout(
-            title='Kiadások - Összes kiadás (ezer Ft) - reálérték'
+            title=f'Kiadások - {selected_branch} - (ezer Ft) - reálérték'
         )
+
+        fig.update_xaxes(
+            title_text='Kiadás (ezer Ft) - reálérték',
+            title_standoff=25)
+
+        fig.update_yaxes(
+            title_text="Év",
+            title_standoff=25)
 
         st.write(fig)
