@@ -10,7 +10,7 @@ class AreaPage:
         self.df = AreaPage.get_data()
         st.title("KÖLTSÉGVETÉSI  MOZGÁSTÉR")
         st.markdown("""Mennyi mozgástere van a kiadások csökkentésére vagy plusz bevételek szerzésére a fővárosi önkormányzatnak? - Ezt a kérdést mi is feltettük magunknak.
-Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadások tekintetében - vagyis az önként vállalt kiadások aránya - nagyon lecsökkent.""")
+Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadások tekintetében - vagyis az önként vállalt költések aránya - nagyon lecsökkent.""")
 
     @staticmethod
     def get_data():
@@ -23,12 +23,9 @@ Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadá
         return df
 
     def create_area(self):
-        print(self.df)
 
         df_summed = self.df.groupby(['Év', 'Felhasználás célja'])[
            'Kiadás (ezer Ft) - reálérték'].sum().reset_index()
-
-        print(df_summed)
 
         fig = px.area(df_summed, x='Év', y='Kiadás (ezer Ft) - reálérték', color='Felhasználás célja')
         fig.data[0].line.color = "rgba(18,50,110,0.7)"
