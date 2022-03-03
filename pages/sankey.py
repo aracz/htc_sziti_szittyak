@@ -71,11 +71,9 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
             bevetel_delta = "-{:.0%}".format(bevetel_delta)
 
         if self.select_year == 2017:
-            metric_row(
-                {
-                    "Bevétel": SankeyPage.human_format(bevetel_total),
-                    "Kiadás": SankeyPage.human_format(kiadas_total),
-                })
+            col1, col2 = st.columns(2)
+            col1.metric("Bevétel", SankeyPage.human_format(bevetel_total), '')
+            col2.metric("Kiadás", SankeyPage.human_format(kiadas_total), '')
         else:
             col1, col2 = st.columns(2)
             col1.metric("Bevétel", SankeyPage.human_format(bevetel_total), str(bevetel_delta))
