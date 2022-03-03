@@ -1,0 +1,12 @@
+[theme]
+base="light"
+primaryColor='#D2B37C'
+
+[server]
+enableCORS = false
+
+[ui]
+hideTopBar = true
+
+[browser]
+gatherUsageStats = false
