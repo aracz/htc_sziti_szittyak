@@ -1,22 +1,14 @@
-import json
 import plotly.graph_objects as go
-import pandas as pd
-import numpy as np
-import plotly.express as px
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 import streamlit as st
 from data.data_prep import DataPreparation
-from streamlit_metrics import metric, metric_row
+
 
 class SankeyPage:
-    def __init__(self, plottype='overview'):
-        """
 
-        :param type:
+    def __init__(self):
         """
-        self.plottype=plottype
+        Initializes data and select for Attekintes tab
+        """
         self.df, self.label_df = SankeyPage.get_data()
         st.title("ÁTTEKINTÉS")
         st.markdown("""A bevételeket a bevételi kategóriák szerinti bontásban mutatjuk meg itt. Az egeret az egyes bevételi kategóriák fölé húzva az adott kategória részletes magyarázata jelenik meg.
@@ -27,14 +19,13 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
         self.df_ev_tminus1 = self.df[self.df['Év'] == (self.select_year-1)]
 
     def run(self):
-        fig = self.create_sankey(self.df)
-        st.write(fig)
+        self.create_sankey()
 
     @staticmethod
     def get_data():
         """
-
-        :return:
+        Gets income and spending data
+        :return: dataframe of sankey source-target data, color labelled data
         """
         data = DataPreparation('resources', 'bevetelek_2017_2021.csv', 'kiadasok_2017_2021.csv', 'UTF-8', ';', 'sankey')
         df, label_df = data.run()
@@ -42,8 +33,7 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
 
     def create_kpi(self):
         """
-
-        :return:
+        Creates KPIs about income and spending sum
         """
         df_kiadas = self.df_ev[self.df_ev['source'].isin(
             ['Főpolgármesteri Hivatal és Önkormányzat', 'Költségvetési intézmények'])]
@@ -78,6 +68,7 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
             col1, col2 = st.columns(2)
             col1.metric("Bevétel", SankeyPage.human_format(bevetel_total), str(bevetel_delta))
             col2.metric("Kiadás", SankeyPage.human_format(kiadas_total), str(kiadas_delta))
+        st.write()
 
     @staticmethod
     def human_format(num):
@@ -88,11 +79,9 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
             num /= 1000.0
         return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'Mrd', 'B', 'T'][magnitude])
 
-
     def create_sankey(self):
         """
-
-        :return:
+        Creates and displays income-spending sankey vis with KPIs
         """
         self.create_kpi()
 
