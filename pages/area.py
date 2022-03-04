@@ -2,7 +2,6 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import streamlit as st
 from data.data_prep import DataPreparation
-from streamlit_metrics import metric, metric_row
 import plotly.express as px
 
 class AreaPage:
