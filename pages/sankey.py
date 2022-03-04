@@ -19,6 +19,7 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
         self.df_ev_tminus1 = self.df[self.df['Év'] == (self.select_year-1)]
 
     def run(self):
+        self.create_kpi()
         self.create_sankey()
 
     @staticmethod
@@ -83,8 +84,6 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
         """
         Creates and displays income-spending sankey vis with KPIs
         """
-        self.create_kpi()
-
         fig = go.Figure(data=[go.Sankey(
             node=dict(
                 pad=15,
