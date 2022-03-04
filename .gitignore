@@ -132,3 +132,6 @@ dmypy.json
 .idea/
 bin/
 resources/*.csv
+
+#Google Sheets access
+.streamlit/secrets.toml

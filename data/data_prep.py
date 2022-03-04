@@ -1,4 +1,7 @@
 import pandas as pd
+import streamlit as st
+from google.oauth2 import service_account
+from gsheetsdb import connect
 
 
 class DataPreparation:
@@ -20,17 +23,42 @@ class DataPreparation:
         elif self.chart_type == 'area':
             return self.area_data()
         else:
-            return self.raw_data()
+            return self.area_data()
+
+    def import_sheets(self):
+
+        credentials = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=[
+                "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        )
+        conn = connect(credentials=credentials)
+
+        def run_query(query):
+            rows = conn.execute(query, headers=1)
+            return rows
+
+        bevetel_url = st.secrets["bevetel_url"]
+        bevetel_raw = run_query(f'SELECT * FROM "{bevetel_url}"')
+
+        bevetel = pd.DataFrame(bevetel_raw.fetchall())
+        bevetel.columns = ["Bevétel típusa", "Főbb bevételi kategória", "Főbb bevételi kategória alkategóriái",
+                           "Megnevezés", "Forrás", "Szervezeti egység", "Év", "Bevétel (ezer Ft) - nominál érték",
+                           "Bevétel (ezer Ft) - reálérték"]
+
+        kiadas_url = st.secrets["kiadas_url"]
+        kiadas_raw = run_query(f'SELECT * FROM "{kiadas_url}"')
+
+        kiadas = pd.DataFrame(kiadas_raw.fetchall())
+        kiadas.columns = ["Címkód", "Címkód megnevezése", "Ágazat", "Ágazat alábontás", "Feladat megnevezése",
+                          "Szervezeti egység", "Év", "Kiadás (ezer Ft) - nominál érték", "Kiadás (ezer Ft) - reálérték"]
+
+        return bevetel, kiadas
 
     def sankey_data(self):
 
         bevetel, kiadas = self.raw_data()
-
-        bevetel['Bevétel(ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
-                                                   bevetel['Bevétel (ezer Ft) - reálérték']]
-
-        kiadas['Kiadás (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
-                                                  kiadas['Kiadás (ezer Ft) - reálérték']]
 
         # kategoria hozzaadasa
         bevetel['oldal'] = 'Bevetel'
@@ -64,8 +92,8 @@ class DataPreparation:
         concat_df = concat_df.groupby(['source', 'target', 'source_code', 'target_code', 'Év'])['value'].sum().reset_index()
 
         label_df['color'] = 'grey'
-        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgb(18, 50, 110, 0.5)",
-                      'Költségvetési intézmények': "rgb(210, 179, 124, 0.5)"}
+        color_dict = {'Főpolgármesteri Hivatal és Önkormányzat': "rgba(160, 217, 247, 0.8)",
+                      'Költségvetési intézmények': "rgba(210, 179, 124, 0.8)"}
         label_df['color'] = label_df['label'].apply(
             lambda x: color_dict[x] if x in color_dict.keys() else 'grey')
         label_df['color'] = label_df['label'].apply(
@@ -80,15 +108,41 @@ class DataPreparation:
 
         return concat_df, label_df
 
+    def area_data(self):
+
+        bevetel, kiadas = self.raw_data()
+
+        kiadas['cimkod_str'] = kiadas['Címkód'].astype(str).str[-1]
+        kiadas['Felhasználás célja'] = 'Kötelező kiadások'
+
+        onkent = kiadas[kiadas['cimkod_str'] == '2']
+        onkent['Felhasználás célja'] = 'Szabadon felhasználható, önként vállalt kiadások'
+
+        kotelezo = kiadas[kiadas['cimkod_str'] == '1']
+
+        hatosagi = kiadas[kiadas['cimkod_str'] == '3']
+        hatosagi['Felhasználás célja'] = 'Hatósági kötelező kiadások'
+
+        concat_df = pd.concat([onkent, kotelezo, hatosagi])
+
+        return concat_df
+
     def raw_data(self):
 
-        bevetel = pd.read_csv(f'{self.resources_dir}/{self.income}', sep=self.separator, header=0,
-                              encoding=self.encoding)
-        kiadas = pd.read_csv(f'{self.resources_dir}/{self.spending}', sep=self.separator, header=0,
-                             encoding=self.encoding)
+        bevetel, kiadas = self.import_sheets()
+
+        bevetel['Bevétel (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
+                                                   bevetel['Bevétel (ezer Ft) - reálérték']]
+
+        kiadas['Kiadás (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
+                                                  kiadas['Kiadás (ezer Ft) - reálérték']]
 
         kiadas['Szervezeti egység'] = [str(i).replace("Költségvetési intézmény", "Költségvetési intézmények") for i in
                                        kiadas['Szervezeti egység']]
+
+        bevetel['Év'] = bevetel['Év'].astype(str).str.split('.').str[0].astype(int)
+        kiadas['Év'] = kiadas['Év'].astype(str).str.split('.').str[0].astype(int)
+        kiadas['Címkód'] = kiadas['Címkód'].astype(str).str.split('.').str[0].astype(int)
 
         rename_dict = {"Főpolgármesteri Hivatal": "Főpolgármesteri Hivatal és Önkormányzat",
                        "Önkormányzat": "Főpolgármesteri Hivatal és Önkormányzat"}
@@ -101,19 +155,12 @@ class DataPreparation:
 
     def barchart_data(self):
 
-        bevetel = self.raw_data()[0]
-        kiadas = self.raw_data()[1]
+        bevetel, kiadas = self.raw_data()
 
         bevetel['oldal'] = 'Bevetel'
         kiadas['oldal'] = 'Kiadas'
 
         kiadas['Ágazat'] = kiadas['Ágazat'].str.split(')').str[-1]
-
-        bevetel['Bevétel (ezer Ft) - reálérték'] = bevetel['Bevétel (ezer Ft) - reálérték'].str.replace(',', '.')
-        bevetel['Bevétel (ezer Ft) - reálérték'] = pd.to_numeric(bevetel['Bevétel (ezer Ft) - reálérték'], downcast="float")
-
-        kiadas['Kiadás (ezer Ft) - reálérték'] = kiadas['Kiadás (ezer Ft) - reálérték'].str.replace(',', '.')
-        kiadas['Kiadás (ezer Ft) - reálérték'] = pd.to_numeric(kiadas['Kiadás (ezer Ft) - reálérték'], downcast="float")
 
         concat_df = pd.concat([bevetel, kiadas])
 
