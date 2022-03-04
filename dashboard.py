@@ -33,7 +33,7 @@ st.markdown("<h1 style='text-align: center; color: #12326E;'>KÖZÉRTHETŐ KÖLT
 
 
 query_params = st.experimental_get_query_params()
-tabs = ["Bevezető", "Áttekintés", "Mozgástér", "Összehasonlítás"]
+tabs = ["Bevezető", "Áttekintés", "Összehasonlítás", "Mozgástér"]
 if "tab" in query_params:
     active_tab = query_params["tab"][0]
 else:

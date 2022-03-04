@@ -10,12 +10,17 @@ class AreaPage:
     def __init__(self):
         self.df = AreaPage.get_data()
         st.title("KÖLTSÉGVETÉSI  MOZGÁSTÉR")
-        st.markdown("""Mennyi mozgástere van a kiadások csökkentésére vagy plusz bevételek szerzésére a fővárosi önkormányzatnak? - Ezt a kérdést mi is feltettük magunknak.
-Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadások tekintetében - vagyis az önként vállalt költések aránya - nagyon lecsökkent.""")
+        st.markdown("""Mennyi mozgástere van a fővárosi önkormányzatnak abban, hogy mire költi a pénzét? - Ezt a kérdést mi is feltettük magunknak. \n
+Az önkormányzatok működését törvények szabályozzák, amelyek előírnak olyan feladatokat, amiket az önkormányzatoknak kötelező ellátniuk. Ezen felül vállalhatnak további feladatokat. Az így keletkező kiadásokra az állam részben a költségvetésen keresztül célzottan biztosít pénzt, ezen felül az önkormányzat törvényben szabályozott keretek között saját bevételt is szerezhet. Értelemszerűen a bevételekből elsősorban a kötelező feladatok kiadásait kell fedezni, ezen felül lehet további feladatokat vállalni, ha van miből. \n
+Erre a mozgástérre voltunk kíváncsiak.
+A grafikonon látszik, hogy 2019-ről 2020-ra az önként vállalt kiadások aránya - vagyis az önkormányzat mozgástere abban, hogy mire költ - nagyon lecsökkent.\n
+\n
+\n
+""")
 
     def run(self):
         self.create_area(self.df)
-        select_year = st.selectbox('Kérem válasszon egy évet:', self.df['Év'].unique())
+        select_year = st.selectbox('Válassz egy évet:', self.df['Év'].unique())
         df_ev = self.df[self.df['Év'] == select_year]
         self.create_bar(df_ev, select_year)
 
