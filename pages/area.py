@@ -6,6 +6,7 @@ from streamlit_metrics import metric, metric_row
 import plotly.express as px
 
 class AreaPage:
+
     def __init__(self):
         self.df = AreaPage.get_data()
         st.title("KÖLTSÉGVETÉSI  MOZGÁSTÉR")
@@ -14,21 +15,16 @@ Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadá
 
     @staticmethod
     def get_data():
-        """
-
-        :return:
-        """
         data = DataPreparation('resources', 'bevetelek_2017_2021.csv', 'kiadasok_2017_2021.csv', 'UTF-8', ';', 'area')
         df = data.run()
         return df
 
     def create_area(self):
 
-        df_summed = self.df.groupby(['Év', 'Felhasználás célja'])[
-           'Kiadás (ezer Ft) - reálérték'].sum().reset_index()
+        df_summed = self.df.groupby(['Év', 'Felhasználás célja'])['Kiadás (ezer Ft) - reálérték'].sum().reset_index()
 
         fig = px.area(df_summed, x='Év', y='Kiadás (ezer Ft) - reálérték', color='Felhasználás célja')
-        fig.data[0].line.color = "rgba(18,50,110,0.7)"
+        fig.data[0].line.color = "rgba(18, 50, 110, 0.7)"
         fig.data[1].line.color = "rgba(210, 179, 124, 0.7)"
         fig.data[2].line.color = "rgba(160, 217, 247, 0.7)"
         fig.for_each_trace(lambda trace: trace.update(fillcolor=trace.line.color))
