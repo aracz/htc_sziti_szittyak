@@ -1,4 +1,7 @@
 import pandas as pd
+import streamlit as st
+from google.oauth2 import service_account
+from gsheetsdb import connect
 
 
 class DataPreparation:
@@ -21,6 +24,37 @@ class DataPreparation:
             return self.area_data()
         else:
             return self.area_data()
+
+    def import_sheets(self):
+
+        credentials = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=[
+                "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        )
+        conn = connect(credentials=credentials)
+
+        def run_query(query):
+            rows = conn.execute(query, headers=1)
+            return rows
+
+        bevetel_url = st.secrets["bevetel_url"]
+        bevetel_raw = run_query(f'SELECT * FROM "{bevetel_url}"')
+
+        bevetel = pd.DataFrame(bevetel_raw.fetchall())
+        bevetel.columns = ["Bevétel típusa", "Főbb bevételi kategória", "Főbb bevételi kategória alkategóriái",
+                           "Megnevezés", "Forrás", "Szervezeti egység", "Év", "Bevétel (ezer Ft) - nominál érték",
+                           "Bevétel (ezer Ft) - reálérték"]
+
+        kiadas_url = st.secrets["kiadas_url"]
+        kiadas_raw = run_query(f'SELECT * FROM "{kiadas_url}"')
+
+        kiadas = pd.DataFrame(kiadas_raw.fetchall())
+        kiadas.columns = ["Címkód", "Címkód megnevezése", "Ágazat", "Ágazat alábontás", "Feladat megnevezése",
+                          "Szervezeti egység", "Év", "Kiadás (ezer Ft) - nominál érték", "Kiadás (ezer Ft) - reálérték"]
+
+        return bevetel, kiadas
 
     def sankey_data(self):
 
@@ -80,9 +114,12 @@ class DataPreparation:
 
         kiadas['cimkod_str'] = kiadas['Címkód'].astype(str).str[-1]
         kiadas['Felhasználás célja'] = 'Kötelező kiadások'
+
         onkent = kiadas[kiadas['cimkod_str'] == '2']
         onkent['Felhasználás célja'] = 'Szabadon felhasználható, önként vállalt kiadások'
+
         kotelezo = kiadas[kiadas['cimkod_str'] == '1']
+
         hatosagi = kiadas[kiadas['cimkod_str'] == '3']
         hatosagi['Felhasználás célja'] = 'Hatósági kötelező kiadások'
 
@@ -92,10 +129,7 @@ class DataPreparation:
 
     def raw_data(self):
 
-        bevetel = pd.read_csv(f'{self.resources_dir}/{self.income}', sep=self.separator, header=0,
-                              encoding=self.encoding)
-        kiadas = pd.read_csv(f'{self.resources_dir}/{self.spending}', sep=self.separator, header=0,
-                             encoding=self.encoding)
+        bevetel, kiadas = self.import_sheets()
 
         bevetel['Bevétel (ezer Ft) - reálérték'] = [float(str(i).replace(",", ".")) for i in
                                                    bevetel['Bevétel (ezer Ft) - reálérték']]
@@ -105,6 +139,10 @@ class DataPreparation:
 
         kiadas['Szervezeti egység'] = [str(i).replace("Költségvetési intézmény", "Költségvetési intézmények") for i in
                                        kiadas['Szervezeti egység']]
+
+        bevetel['Év'] = bevetel['Év'].astype(str).str.split('.').str[0].astype(int)
+        kiadas['Év'] = kiadas['Év'].astype(str).str.split('.').str[0].astype(int)
+        kiadas['Címkód'] = kiadas['Címkód'].astype(str).str.split('.').str[0].astype(int)
 
         rename_dict = {"Főpolgármesteri Hivatal": "Főpolgármesteri Hivatal és Önkormányzat",
                        "Önkormányzat": "Főpolgármesteri Hivatal és Önkormányzat"}
