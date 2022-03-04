@@ -86,7 +86,7 @@ A diagrammon láthatóak még az egyes költségvetési tételek felett rendelke
         while abs(num) >= 1000:
             magnitude += 1
             num /= 1000.0
-        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
+        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'Mrd', 'B', 'T'][magnitude])
 
 
     def create_sankey(self):
