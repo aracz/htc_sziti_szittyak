@@ -64,10 +64,10 @@ if active_tab == "Bevezető":
     fig = home.create_homepage()
 elif active_tab == "Áttekintés":
     sankey_page = SankeyPage()
-    fig = sankey_page.create_sankey()
+    fig = sankey_page.run()
 elif active_tab == "Mozgástér":
     area_page = AreaPage()
-    fig = area_page.create_area()
+    fig = area_page.run()
 elif active_tab == 'Összehasonlítás':
     comparison_page = ComparisonChart()
     title1 = 'Bevételek'
