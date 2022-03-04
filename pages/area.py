@@ -65,6 +65,10 @@ Az alábbi grafikonon látszik, hogy 2019-ről 2020-ra ez a mozgástér a kiadá
             title=f'Tíz legnagyobb önként vállalt kiadás  - {year}'
         )
 
+        fig.update_yaxes(
+            title_text='Kiadás (ezer Ft) - reálérték',
+            title_standoff=25)
+
         st.write(fig)
 
 
