@@ -14,7 +14,9 @@ class ComparisonChart:
         self.df = ComparisonChart.get_data()
         st.title("Összehasonlítás")
         st.markdown(
-            "Ezen az oldalon a bevételeket és a kiadásokat tudod megvizsgálni, az egyes évek adatait tudod összehasonlítani különböző szempontok szerinti bontásban. Az éveket és a szűrési szempontokat a legördülő menükből tudod kiválasztani.")
+            "Ezen az oldalon a bevételeket és a kiadásokat tudod megvizsgálni, az egyes évek adatait tudod összehasonlítani különböző szempontok szerinti bontásban. ")
+        st.markdown("Az éveket és a szűrési szempontokat a legördülő menükből tudod kiválasztani.")
+        st.markdown("Például megvizsgálhatod, hogy 2018-ban vagy 2020-ban volt-e több költségvetési bevétele a fővárosnak. Vagy a kiadásokat nézve összevetheted, hogy 2020 után az önkormányzathoz tartozó színházak számának csökkenése hogyan érintette a kulturális és sport feladatokra költött pénzeket.")
         self.select_year_multi = st.multiselect('Válaszd ki az éveket az összehasonlításhoz:', self.df['Év'].unique(),
                                                 default=self.df['Év'].unique())
 
